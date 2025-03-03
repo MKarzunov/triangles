@@ -53,7 +53,7 @@ class MainWindowClass(QtWidgets.QWidget):
 
     def check_triangle(self):
         values = [getattr(self, f"side_{side}_input").text().strip() for side in self.sides]
-        test_set = set()
+        test_list = []
         for value in values:
             if value == '':
                 result = "Одно или несколько полей остались незаполненными"
@@ -61,21 +61,18 @@ class MainWindowClass(QtWidgets.QWidget):
             if not value.isdigit() or value == '0':
                 result = "В поля допускается вводить только строго положительные целые числа"
                 break
-            test_set.add(int(value))
+            test_list.append(int(value))
         else:
-            if len(test_set) == 1:
+            test_set = set(test_list)
+            test_list.sort()
+            if test_list[0] + test_list[1] <= test_list[2]:
+                result = "Треугольник с заданными сторонами не существует"
+            elif len(test_set) == 1:
                 result = "Треугольник равносторонний"
             elif len(test_set) == 2:
-                if 2 * min(test_set) <= max(test_set):
-                    result = "Треугольник с заданными сторонами не существует"
-                else:
-                    result = "Треугольник равнобедренный"
+                result = "Треугольник равнобедренный"
             else:
-                test_list_sorted = sorted(test_set)
-                if test_list_sorted[0] + test_list_sorted[1] <= test_list_sorted[2]:
-                    result = "Треугольник с заданными сторонами не существует"
-                else:
-                    result = "Треугольник разносторонний"
+                result = "Треугольник разносторонний"
         msg = QtWidgets.QMessageBox(text=result)
         msg.setWindowTitle("Результат")
         msg.exec_()
